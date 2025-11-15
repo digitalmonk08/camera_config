@@ -160,6 +160,25 @@ app.get("/gasconfig", async (req, res) => {
 // ======================
 // 🟢 CAMERA IMAGE UPLOAD
 // ======================
+// app.post("/cameraimg", (req, res) => {
+//   const { base64 } = req.body;
+//   if (!base64) return res.status(400).json({ error: "Missing base64 data" });
+
+//   const buffer = Buffer.from(base64, "base64");
+//   const filename = `image_${Date.now()}.jpg`;
+//   fs.writeFileSync(path.join(uploadsDir, filename), buffer);
+
+//   const fileUrl = `http://localhost:3000/uploads/${filename}`;
+//   console.log("📸 Image saved:", fileUrl);
+//   res.json({ status: "success", url: fileUrl });
+// });
+
+// app.get("/cameraimg", (req, res) => {
+//   const files = fs.readdirSync(uploadsDir);
+//   const urls = files.map(f => `http://localhost:3000/uploads/${f}`);
+//   res.json({ status: "success", images: urls });
+// });
+// 🟢 CAMERA IMAGE UPLOAD
 app.post("/cameraimg", (req, res) => {
   const { base64 } = req.body;
   if (!base64) return res.status(400).json({ error: "Missing base64 data" });
@@ -168,14 +187,17 @@ app.post("/cameraimg", (req, res) => {
   const filename = `image_${Date.now()}.jpg`;
   fs.writeFileSync(path.join(uploadsDir, filename), buffer);
 
-  const fileUrl = `http://localhost:3000/uploads/${filename}`;
+  // Dynamically build URL based on request
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${filename}`;
   console.log("📸 Image saved:", fileUrl);
   res.json({ status: "success", url: fileUrl });
 });
 
 app.get("/cameraimg", (req, res) => {
   const files = fs.readdirSync(uploadsDir);
-  const urls = files.map(f => `http://localhost:3000/uploads/${f}`);
+
+  // Build dynamic URLs for each image
+  const urls = files.map(f => `${req.protocol}://${req.get("host")}/uploads/${f}`);
   res.json({ status: "success", images: urls });
 });
 

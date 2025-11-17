@@ -16,6 +16,9 @@ const pool = new Pool({
   database: "defaultdb",
   password: "AVNS_PvaTg-vz7W_k_Pf0AKT",
   port: 25060,
+  ssl: {
+    rejectUnauthorized: false, // allows connecting to DigitalOcean managed DB
+  },
 });
 
 // Create tables if not exist
